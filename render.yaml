@@ -1,0 +1,8 @@
+  - type: web
+    name: ktor-user-api
+    env: gradle
+    buildCommand: ./gradlew build
+    startCommand: ./gradlew run
+    envVars:
+      - key: PORT
+        value: 8080
