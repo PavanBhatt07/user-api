@@ -1,26 +1,19 @@
-# Use the official Gradle image to build the application
-FROM gradle:8.4.0-jdk17 as builder
+# Use official Gradle image to build the app
+FROM gradle:8.2.1-jdk17 AS build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy everything to /app
 COPY . .
 
-# Build the project
-RUN gradle installDist
+RUN gradle installDist --no-daemon
 
-# Use a smaller base image to run the application
-FROM openjdk:17-slim
+# Use a smaller JDK image for running the app
+FROM eclipse-temurin:17-jdk
 
-# Set working directory
 WORKDIR /app
 
-# Copy the built app from builder
-COPY --from=builder /app/build/install/* /app
+COPY --from=build /app/build/install/user-api /app
 
-# Expose port (match what your app uses, 8080)
 EXPOSE 8080
 
-# Run the app
 CMD ["./bin/user-api"]
