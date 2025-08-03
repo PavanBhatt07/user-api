@@ -1,19 +1,17 @@
-# Use official Gradle image to build the app
-FROM gradle:8.2.1-jdk17 AS build
-
+# ---- Build Stage ----
+FROM gradle:8.4.0-jdk17-alpine AS build
 WORKDIR /app
-
 COPY . .
 
-RUN gradle installDist --no-daemon
+# Build the application
+RUN gradle installDist
 
-# Use a smaller JDK image for running the app
-FROM eclipse-temurin:17-jdk
-
+# ---- Runtime Stage ----
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
+# Copy built artifacts from the build stage
 COPY --from=build /app/build/install/user-api /app
 
-EXPOSE 8080
-
+# Run the app
 CMD ["./bin/user-api"]
